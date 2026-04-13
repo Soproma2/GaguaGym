@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GaguaGym")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f53d41984980c3e7fda06e92ab3e902948e411b6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3609ad1867599d2275fd0e98ba88dfa7b5bce80b")]
 [assembly: System.Reflection.AssemblyProductAttribute("GaguaGym")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GaguaGym")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

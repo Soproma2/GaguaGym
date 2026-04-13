@@ -1,7 +1,11 @@
 ﻿using GaguaGym.Common;
 using GaguaGym.Data;
+using GaguaGym.DTOs.Requests.Trainers;
+using GaguaGym.DTOs.Responses.Schedule;
+using GaguaGym.DTOs.Responses.Trainer;
 using GaguaGym.Enums;
 using GaguaGym.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GaguaGym.Services.TrainerService
 {

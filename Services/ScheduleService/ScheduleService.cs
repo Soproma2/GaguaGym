@@ -1,6 +1,9 @@
 ﻿using GaguaGym.Common;
 using GaguaGym.Data;
+using GaguaGym.DTOs.Requests.Schedules;
+using GaguaGym.DTOs.Responses.Schedule;
 using GaguaGym.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GaguaGym.Services.ScheduleService
 {

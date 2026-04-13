@@ -1,7 +1,14 @@
 ﻿using GaguaGym.Common;
 using GaguaGym.Data;
+using GaguaGym.DTOs.Requests.Members;
+using GaguaGym.DTOs.Requests.PaginationRequest;
+using GaguaGym.DTOs.Responses.Member;
+using GaguaGym.DTOs.Responses.Membership;
+using GaguaGym.DTOs.Responses.MembershipPlan;
+using GaguaGym.DTOs.Responses.Visit;
 using GaguaGym.Enums;
 using GaguaGym.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GaguaGym.Services.MemberService
 {
@@ -163,10 +170,10 @@ namespace GaguaGym.Services.MemberService
             return Result<List<VisitResponse>>.Success(visits);
         }
 
-        public Result<List<MemberMembershipResponse>> GetMemberships(int memberId)
+        public Result<List<MembershipResponse>> GetMemberships(int memberId)
         {
             if (!db.Members.Any(m => m.Id == memberId))
-                return Result<List<MemberMembershipResponse>>.NotFound("წევრი ვერ მოიძებნა.");
+                return Result<List<MembershipResponse>>.NotFound("წევრი ვერ მოიძებნა.");
 
             var memberships = db.MemberMemberships
                 .Include(ms => ms.Member).ThenInclude(m => m.User)
@@ -177,7 +184,7 @@ namespace GaguaGym.Services.MemberService
                 .Select(MapToMemberMembershipResponse)
                 .ToList();
 
-            return Result<List<MemberMembershipResponse>>.Success(memberships);
+            return Result<List<MembershipResponse>>.Success(memberships);
         }
 
         // ─── Static Mappers (shared across services) ──────────────────────────────
@@ -200,7 +207,7 @@ namespace GaguaGym.Services.MemberService
                 .FirstOrDefault()
         };
 
-        public static MemberMembershipResponse MapToMemberMembershipResponse(MemberMembership ms) => new()
+        public static MembershipResponse MapToMemberMembershipResponse(Membership ms) => new()
         {
             Id = ms.Id,
             MemberId = ms.MemberId,

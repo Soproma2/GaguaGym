@@ -7,8 +7,8 @@ namespace GaguaGym.Data
     {
         public DbSet<User> Users {  get; set; }
         public DbSet<Member> Members {  get; set; }
-        public DbSet<MemberShipPlan> MembershipPlans {  get; set; }
-        public DbSet<MemberShip> MemberMemberships { get; set; }
+        public DbSet<MembershipPlan> MembershipPlans {  get; set; }
+        public DbSet<Membership> MemberMemberships { get; set; }
         public DbSet<Trainer> Trainers {  get; set; }
         public DbSet<Schedule> Schedules {  get; set; }
         public DbSet<Booking> Bookings {  get; set; }
@@ -53,7 +53,7 @@ namespace GaguaGym.Data
             });
 
             // MemberMembership
-            modelBuilder.Entity<MemberMembership>(e =>
+            modelBuilder.Entity<Membership>(e =>
             {
                 e.HasKey(m => m.Id);
                 e.HasOne(m => m.Member)
@@ -61,7 +61,7 @@ namespace GaguaGym.Data
                     .HasForeignKey(m => m.MemberId)
                     .OnDelete(DeleteBehavior.Cascade);
                 e.HasOne(m => m.Plan)
-                    .WithMany(p => p.MemberMemberships)
+                    .WithMany(p => p.Memberships)
                     .HasForeignKey(m => m.PlanId)
                     .OnDelete(DeleteBehavior.Restrict);
                 e.Property(m => m.Status).HasConversion<string>();
@@ -117,10 +117,10 @@ namespace GaguaGym.Data
             });
 
             // Seed Data
-            modelBuilder.Entity<MemberShipPlan>().HasData(
-                new MemberShipPlan { Id = 1, Name = "Basic", Price = 50, DurationDays = 30, Description = "ბაზისური გეგმა — 1 თვე" },
-                new MemberShipPlan { Id = 2, Name = "Standard", Price = 120, DurationDays = 90, Description = "სტანდარტული გეგმა — 3 თვე" },
-                new MemberShipPlan { Id = 3, Name = "Premium", Price = 200, DurationDays = 180, Description = "პრემიუმ გეგმა — 6 თვე" }
+            modelBuilder.Entity<MembershipPlan>().HasData(
+                new MembershipPlan { Id = 1, Name = "Basic", Price = 50, DurationDays = 30, Description = "ბაზისური გეგმა — 1 თვე" },
+                new MembershipPlan { Id = 2, Name = "Standard", Price = 120, DurationDays = 90, Description = "სტანდარტული გეგმა — 3 თვე" },
+                new MembershipPlan { Id = 3, Name = "Premium", Price = 200, DurationDays = 180, Description = "პრემიუმ გეგმა — 6 თვე" }
             );
         }
     }

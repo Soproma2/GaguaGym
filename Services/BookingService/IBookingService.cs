@@ -1,4 +1,6 @@
 ﻿using GaguaGym.Common;
+using GaguaGym.DTOs.Requests.Bookings;
+using GaguaGym.DTOs.Responses.Booking;
 
 namespace GaguaGym.Services.BookingService
 {

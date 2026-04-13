@@ -1,4 +1,9 @@
 ﻿using GaguaGym.Common;
+using GaguaGym.DTOs.Requests.Members;
+using GaguaGym.DTOs.Requests.PaginationRequest;
+using GaguaGym.DTOs.Responses.Member;
+using GaguaGym.DTOs.Responses.Membership;
+using GaguaGym.DTOs.Responses.Visit;
 
 namespace GaguaGym.Services.MemberService
 {
@@ -10,6 +15,6 @@ namespace GaguaGym.Services.MemberService
         Result<MemberResponse> Update(int id, UpdateMemberRequest request);
         Result<bool> Delete(int id);
         Result<List<VisitResponse>> GetVisits(int memberId);
-        Result<List<MemberMembershipResponse>> GetMemberships(int memberId);
+        Result<List<MembershipResponse>> GetMemberships(int memberId);
     }
 }

@@ -1,7 +1,10 @@
 ﻿using GaguaGym.Common;
 using GaguaGym.Data;
+using GaguaGym.DTOs.Requests.Bookings;
+using GaguaGym.DTOs.Responses.Booking;
 using GaguaGym.Enums;
 using GaguaGym.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GaguaGym.Services.BookingService
 {

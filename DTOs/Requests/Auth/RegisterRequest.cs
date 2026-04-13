@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GaguaGym.DTOs.Requests.Auth
 {
-\public class RegisterRequest
+public class RegisterRequest
     {
         [Required, MaxLength(100)]
         public string FirstName { get; set; } = string.Empty;

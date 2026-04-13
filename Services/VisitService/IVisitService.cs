@@ -1,4 +1,6 @@
 ﻿using GaguaGym.Common;
+using GaguaGym.DTOs.Requests.Visits;
+using GaguaGym.DTOs.Responses.Visit;
 
 namespace GaguaGym.Services.VisitService
 {

@@ -1,4 +1,7 @@
 ﻿using GaguaGym.Common;
+using GaguaGym.DTOs.Requests.Trainers;
+using GaguaGym.DTOs.Responses.Schedule;
+using GaguaGym.DTOs.Responses.Trainer;
 
 namespace GaguaGym.Services.TrainerService
 {

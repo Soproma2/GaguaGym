@@ -1,7 +1,10 @@
 ﻿using GaguaGym.Common;
 using GaguaGym.Data;
+using GaguaGym.DTOs.Requests.Visits;
+using GaguaGym.DTOs.Responses.Visit;
 using GaguaGym.Enums;
 using GaguaGym.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GaguaGym.Services.VisitService
 {

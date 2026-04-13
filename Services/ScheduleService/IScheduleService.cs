@@ -1,4 +1,6 @@
 ﻿using GaguaGym.Common;
+using GaguaGym.DTOs.Requests.Schedules;
+using GaguaGym.DTOs.Responses.Schedule;
 
 namespace GaguaGym.Services.ScheduleService
 {

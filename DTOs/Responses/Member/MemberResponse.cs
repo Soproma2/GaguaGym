@@ -1,4 +1,6 @@
-﻿namespace GaguaGym.DTOs.Responses.Member
+﻿using GaguaGym.DTOs.Responses.Membership;
+
+namespace GaguaGym.DTOs.Responses.Member
 {
     public class MemberResponse
     {
@@ -12,6 +14,6 @@
         public DateTime JoinDate { get; set; }
         public bool IsActive { get; set; }
         public string? Notes { get; set; }
-        public MemberMembershipResponse? ActiveMembership { get; set; }
+        public MembershipResponse? ActiveMembership { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using GaguaGym.Common;
 using GaguaGym.Data;
+using GaguaGym.DTOs.Requests.Auth;
+using GaguaGym.DTOs.Responses.Auth;
 using GaguaGym.Models;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.IdentityModel.Tokens;
@@ -11,7 +13,7 @@ namespace GaguaGym.Services.Auth
 {
     public class AuthService(AppDbContext db, IConfiguration configuration) : IAuthService
     {
-        public Result<AuthResponse> Register(RegisterRequest request)
+        public Result<AuthResponse> Register(DTOs.Requests.Auth.RegisterRequest request)
         {
             var exists = db.Users.Any(u => u.Email == request.Email.ToLower());
             if (exists)
@@ -40,7 +42,7 @@ namespace GaguaGym.Services.Auth
             return Result<AuthResponse>.Success(MapToAuthResponse(user, token), 201);
         }
 
-        public Result<AuthResponse> Login(LoginRequest request)
+        public Result<AuthResponse> Login(DTOs.Requests.Auth.LoginRequest request)
         {
             var user = db.Users.FirstOrDefault(u => u.Email == request.Email.ToLower());
 
