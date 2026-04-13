@@ -7,7 +7,7 @@ using GaguaGym.DTOs.Responses.Visit;
 
 namespace GaguaGym.Services.MemberService
 {
-    public class IMemberService
+    public interface IMemberService
     {
         Result<PagedResult<MemberListResponse>> GetAll(PaginationRequest request);
         Result<MemberResponse> GetById(int id);

@@ -8,48 +8,49 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GaguaGym.Services.VisitService
 {
-    public class VisitService(AppDbContext db) : IVisitService
+    public class VisitService : IVisitService
     {
-        public Result<VisitResponse> CheckIn(CheckInRequest request)
+        private readonly AppDbContext _db;
+        public VisitService(AppDbContext db) => _db = db;
+
+        public Result<VisitResponse> CheckIn(CheckInRequest req)
         {
-            var member = db.Members
+            var member = _db.Members
                 .Include(m => m.User)
-                .FirstOrDefault(m => m.Id == request.MemberId && m.IsActive);
+                .FirstOrDefault(m => m.Id == req.MemberId && m.IsActive);
 
             if (member is null)
                 return Result<VisitResponse>.NotFound("წევრი ვერ მოიძებნა.");
 
-            if (db.Visits.Any(v => v.MemberId == request.MemberId && v.CheckOutTime == null))
+            if (_db.Visits.Any(v => v.MemberId == req.MemberId && v.CheckOutTime == null))
                 return Result<VisitResponse>.Failure("წევრს უკვე აქვს გახსნილი ვიზიტი.");
 
-            var hasActiveMembership = db.MemberMemberships.Any(ms =>
-                ms.MemberId == request.MemberId &&
+            if (!_db.MemberMemberships.Any(ms =>
+                ms.MemberId == req.MemberId &&
                 ms.Status == MembershipStatus.Active &&
-                ms.EndDate > DateTime.UtcNow);
-
-            if (!hasActiveMembership)
+                ms.EndDate > DateTime.UtcNow))
                 return Result<VisitResponse>.Failure("წევრს არ აქვს მოქმედი წევრობა.");
 
             var visit = new Visit
             {
-                MemberId = request.MemberId,
+                MemberId = req.MemberId,
                 CheckInTime = DateTime.UtcNow,
-                Notes = request.Notes
+                Notes = req.Notes
             };
 
-            db.Visits.Add(visit);
-            db.SaveChanges();
+            _db.Visits.Add(visit);
+            _db.SaveChanges();
 
-            var created = db.Visits
+            var created = _db.Visits
                 .Include(v => v.Member).ThenInclude(m => m.User)
                 .First(v => v.Id == visit.Id);
 
-            return Result<VisitResponse>.Success(MemberService.MapToVisitResponse(created), 201);
+            return Result<VisitResponse>.Success(Mappers.ToVisitResponse(created), 201);
         }
 
         public Result<VisitResponse> CheckOut(int visitId)
         {
-            var visit = db.Visits
+            var visit = _db.Visits
                 .Include(v => v.Member).ThenInclude(m => m.User)
                 .FirstOrDefault(v => v.Id == visitId);
 
@@ -60,20 +61,21 @@ namespace GaguaGym.Services.VisitService
                 return Result<VisitResponse>.Failure("ეს ვიზიტი უკვე დახურულია.");
 
             visit.CheckOutTime = DateTime.UtcNow;
-            db.SaveChanges();
+            _db.SaveChanges();
 
-            return Result<VisitResponse>.Success(MemberService.MapToVisitResponse(visit));
+            return Result<VisitResponse>.Success(Mappers.ToVisitResponse(visit));
         }
 
         public Result<List<VisitResponse>> GetTodayVisits()
         {
             var todayUtc = DateTime.UtcNow.Date;
-            var visits = db.Visits
+
+            var visits = _db.Visits
                 .Include(v => v.Member).ThenInclude(m => m.User)
                 .Where(v => v.CheckInTime.Date == todayUtc)
                 .OrderByDescending(v => v.CheckInTime)
                 .ToList()
-                .Select(MemberService.MapToVisitResponse)
+                .Select(Mappers.ToVisitResponse)
                 .ToList();
 
             return Result<List<VisitResponse>>.Success(visits);
@@ -81,15 +83,15 @@ namespace GaguaGym.Services.VisitService
 
         public Result<List<VisitResponse>> GetMemberVisits(int memberId)
         {
-            if (!db.Members.Any(m => m.Id == memberId))
+            if (!_db.Members.Any(m => m.Id == memberId))
                 return Result<List<VisitResponse>>.NotFound("წევრი ვერ მოიძებნა.");
 
-            var visits = db.Visits
+            var visits = _db.Visits
                 .Include(v => v.Member).ThenInclude(m => m.User)
                 .Where(v => v.MemberId == memberId)
                 .OrderByDescending(v => v.CheckInTime)
                 .ToList()
-                .Select(MemberService.MapToVisitResponse)
+                .Select(Mappers.ToVisitResponse)
                 .ToList();
 
             return Result<List<VisitResponse>>.Success(visits);

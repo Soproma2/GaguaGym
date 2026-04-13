@@ -1,4 +1,4 @@
-﻿using GaguaGym.Common;
+using GaguaGym.Common;
 using GaguaGym.Data;
 using GaguaGym.DTOs.Requests.Schedules;
 using GaguaGym.DTOs.Responses.Schedule;
@@ -7,11 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GaguaGym.Services.ScheduleService
 {
-    public class ScheduleService(AppDbContext db) : IScheduleService
+    public class ScheduleService : IScheduleService
     {
+        private readonly AppDbContext _db;
+        public ScheduleService(AppDbContext db) => _db = db;
+
         public Result<List<ScheduleResponse>> GetAll(DateTime? from, DateTime? to)
         {
-            var query = db.Schedules
+            var query = _db.Schedules
                 .Include(s => s.Trainer).ThenInclude(t => t.User)
                 .Where(s => s.IsActive)
                 .AsQueryable();
@@ -22,7 +25,7 @@ namespace GaguaGym.Services.ScheduleService
             var schedules = query
                 .OrderBy(s => s.StartTime)
                 .ToList()
-                .Select(s => MapToResponse(s))
+                .Select(Mappers.ToScheduleResponse)
                 .ToList();
 
             return Result<List<ScheduleResponse>>.Success(schedules);
@@ -30,87 +33,75 @@ namespace GaguaGym.Services.ScheduleService
 
         public Result<ScheduleResponse> GetById(int id)
         {
-            var schedule = db.Schedules
+            var schedule = _db.Schedules
                 .Include(s => s.Trainer).ThenInclude(t => t.User)
                 .FirstOrDefault(s => s.Id == id);
 
             return schedule is null
-                ? Result<ScheduleResponse>.NotFound("განრიგი ვერ მოიძებნა.")
-                : Result<ScheduleResponse>.Success(MapToResponse(schedule));
+                ? Result<ScheduleResponse>.NotFound("??????? ??? ????????.")
+                : Result<ScheduleResponse>.Success(Mappers.ToScheduleResponse(schedule));
         }
 
-        public Result<ScheduleResponse> Create(CreateScheduleRequest request)
+        public Result<ScheduleResponse> Create(CreateScheduleRequest req)
         {
-            if (request.EndTime <= request.StartTime)
-                return Result<ScheduleResponse>.Failure("დასრულების დრო უნდა იყოს დაწყების დროზე გვიან.");
+            if (req.EndTime <= req.StartTime)
+                return Result<ScheduleResponse>.Failure("?????????? ??? ???? ???? ???????? ????? ?????.");
 
-            if (!db.Trainers.Any(t => t.Id == request.TrainerId))
-                return Result<ScheduleResponse>.NotFound("ტრენერი ვერ მოიძებნა.");
+            if (!_db.Trainers.Any(t => t.Id == req.TrainerId))
+                return Result<ScheduleResponse>.NotFound("??????? ??? ????????.");
 
             var schedule = new Schedule
             {
-                TrainerId = request.TrainerId,
-                Title = request.Title.Trim(),
-                Description = request.Description?.Trim(),
-                StartTime = request.StartTime.ToUniversalTime(),
-                EndTime = request.EndTime.ToUniversalTime(),
-                Capacity = request.Capacity,
+                TrainerId = req.TrainerId,
+                Title = req.Title.Trim(),
+                Description = req.Description?.Trim(),
+                StartTime = req.StartTime.ToUniversalTime(),
+                EndTime = req.EndTime.ToUniversalTime(),
+                Capacity = req.Capacity,
                 CreatedAt = DateTime.UtcNow
             };
 
-            db.Schedules.Add(schedule);
-            db.SaveChanges();
+            _db.Schedules.Add(schedule);
+            _db.SaveChanges();
 
-            var created = db.Schedules
+            var created = _db.Schedules
                 .Include(s => s.Trainer).ThenInclude(t => t.User)
                 .First(s => s.Id == schedule.Id);
 
-            return Result<ScheduleResponse>.Success(MapToResponse(created), 201);
+            return Result<ScheduleResponse>.Success(Mappers.ToScheduleResponse(created), 201);
         }
 
-        public Result<ScheduleResponse> Update(int id, UpdateScheduleRequest request)
+        public Result<ScheduleResponse> Update(int id, UpdateScheduleRequest req)
         {
-            var schedule = db.Schedules
+            var schedule = _db.Schedules
                 .Include(s => s.Trainer).ThenInclude(t => t.User)
                 .FirstOrDefault(s => s.Id == id);
 
             if (schedule is null)
-                return Result<ScheduleResponse>.NotFound("განრიგი ვერ მოიძებნა.");
+                return Result<ScheduleResponse>.NotFound("??????? ??? ????????.");
 
-            if (request.Title is not null) schedule.Title = request.Title.Trim();
-            if (request.Description is not null) schedule.Description = request.Description.Trim();
-            if (request.StartTime.HasValue) schedule.StartTime = request.StartTime.Value.ToUniversalTime();
-            if (request.EndTime.HasValue) schedule.EndTime = request.EndTime.Value.ToUniversalTime();
-            if (request.Capacity.HasValue) schedule.Capacity = request.Capacity.Value;
-            if (request.IsActive.HasValue) schedule.IsActive = request.IsActive.Value;
+            if (req.Title is not null) schedule.Title = req.Title.Trim();
+            if (req.Description is not null) schedule.Description = req.Description.Trim();
+            if (req.StartTime.HasValue) schedule.StartTime = req.StartTime.Value.ToUniversalTime();
+            if (req.EndTime.HasValue) schedule.EndTime = req.EndTime.Value.ToUniversalTime();
+            if (req.Capacity.HasValue) schedule.Capacity = req.Capacity.Value;
+            if (req.IsActive.HasValue) schedule.IsActive = req.IsActive.Value;
 
-            db.SaveChanges();
-            return Result<ScheduleResponse>.Success(MapToResponse(schedule));
+            _db.SaveChanges();
+
+            return Result<ScheduleResponse>.Success(Mappers.ToScheduleResponse(schedule));
         }
 
         public Result<bool> Delete(int id)
         {
-            var schedule = db.Schedules.Find(id);
+            var schedule = _db.Schedules.Find(id);
             if (schedule is null)
-                return Result<bool>.NotFound("განრიგი ვერ მოიძებნა.");
+                return Result<bool>.NotFound("??????? ??? ????????.");
 
             schedule.IsActive = false;
-            db.SaveChanges();
+            _db.SaveChanges();
+
             return Result<bool>.Success(true);
         }
-
-        public static ScheduleResponse MapToResponse(Schedule s) => new()
-        {
-            Id = s.Id,
-            Title = s.Title,
-            Description = s.Description,
-            StartTime = s.StartTime,
-            EndTime = s.EndTime,
-            Capacity = s.Capacity,
-            CurrentCount = s.CurrentCount,
-            AvailableSpots = s.Capacity - s.CurrentCount,
-            IsActive = s.IsActive,
-            Trainer = TrainerService.MapToResponse(s.Trainer)
-        };
     }
 }

@@ -74,7 +74,7 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Gagua Gym API",
         Version = "v1",
         Description = "Gagua Gym Management System — ASP.NET Core 8 Web API",
-        Contact = new OpenApiContact { Name = "Gagua Gym", Phone = "+995 123 456 789" }
+        Contact = new OpenApiContact { Name = "Gagua Gym"}
     });
 
     // JWT Authorization in Swagger UI
