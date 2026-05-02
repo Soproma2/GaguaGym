@@ -11,6 +11,6 @@
 
         // Navigation
         public User User { get; set; } = null!;
-        public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
+        public List<Schedule> Schedules { get; set; } = new List<Schedule>();
     }
 }

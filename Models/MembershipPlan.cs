@@ -11,6 +11,6 @@
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation
-        public ICollection<Membership> Memberships { get; set; } = new List<Membership>();
+        public List<Membership> Memberships { get; set; } = new List<Membership>();
     }
 }

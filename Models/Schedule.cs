@@ -15,6 +15,6 @@
 
         // Navigation
         public Trainer Trainer { get; set; } = null!;
-        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+        public List<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }

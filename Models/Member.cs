@@ -14,8 +14,8 @@ namespace GaguaGym.Models
 
         // Navigation
         public User User { get; set; } = null!;
-        public ICollection<Membership> Memberships { get; set; } = new List<Membership>();
-        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
-        public ICollection<Visit> Visits { get; set; } = new List<Visit>();
+        public List<Membership> Memberships { get; set; } = new List<Membership>();
+        public List<Booking> Bookings { get; set; } = new List<Booking>();
+        public List<Visit> Visits { get; set; } = new List<Visit>();
     }
 }
